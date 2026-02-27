@@ -25,6 +25,9 @@
 #include "lib/ash/ob_active_session_guard.h"
 #include "lib/stat/ob_session_stat.h"
 #include "lib/resource/ob_affinity_ctrl.h"
+#ifdef __APPLE__
+#include "lib/thread/ob_thread_info_registry.h"
+#endif
 
 using namespace oceanbase;
 using namespace oceanbase::common;
@@ -341,6 +344,8 @@ void* Thread::__th_start(void *arg)
   // to prevent the parent thread from spin-waiting with low scheduling priority.
   setpriority(PRIO_DARWIN_THREAD, 0, 0);
   ATOMIC_STORE(&th->create_ret_, OB_SUCCESS);
+  // Register this thread's TLS info for cross-thread inspection (used by virtual tables)
+  common::ob_register_thread_tls_info();
 #endif
   ob_set_thread_tenant_id(th->get_tenant_id());
   current_thread_ = th;
