@@ -34315,6 +34315,18 @@ int ObDDLSQLTransaction::serialize_inc_schemas_(
   UNUSED(tenant_schemas);
   UNUSED(database_schemas);
   UNUSED(table_schemas);
+  // Register DDL_TRANS MDS so that Change Stream Fetcher can detect DDL transactions.
+  // Upstream serializes full incremental schema dict here (via ObDataDictStorage),
+  // but SeekDB only needs the MDS type signal, not the data content.
+  char dummy = '\0';
+  if (OB_FAIL(register_tx_data(
+      tenant_id_,
+      SYS_LS,
+      transaction::ObTxDataSourceType::DDL_TRANS,
+      &dummy,
+      sizeof(dummy)))) {
+    LOG_WARN("register DDL_TRANS MDS failed", KR(ret), K_(tenant_id));
+  }
   return ret;
 }
 

@@ -351,6 +351,7 @@ int ObVectorIndexUtil::parser_params_from_string(
             param.sync_interval_value_ = 0;
           } else if (new_param_value == "ASYNC") {
             param.sync_interval_type_ = ObVectorIndexSyncIntervalType::VSIT_NUMERIC;
+            param.sync_mode_async_ = true;
           } else {
             ret = OB_INVALID_ARGUMENT;
             LOG_WARN("sync_mode value is invalid", K(ret), K(new_param_value));
