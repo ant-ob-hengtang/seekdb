@@ -80,7 +80,6 @@ function get_os_release() {
       return 0
     fi
   fi
-
   if [[ "${OS_ARCH}x" == "x86_64x" ]]; then
     case "$ID" in
       rhel)
